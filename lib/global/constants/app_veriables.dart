@@ -1,0 +1,3 @@
+class AppVeriables {
+  AppVeriables._();
+}
