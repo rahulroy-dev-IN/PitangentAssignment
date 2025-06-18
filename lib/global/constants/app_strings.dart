@@ -16,4 +16,12 @@ class AppStrings {
 
   static String connectionError =
       "Network connection error. Please check your internet.";
+
+  static String elevateYour = "Elevate Your ";
+  static String styleGame = "Style Game";
+  static String withRunova = " With Runova.";
+  static String discoverTheLatest =
+      "Discover the latest trends, curated collections and exclusive offers to keep yourself dashing.";
+
+  static String getStarted = "Get Started";
 }

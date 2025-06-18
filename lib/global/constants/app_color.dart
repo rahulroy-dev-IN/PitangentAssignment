@@ -15,4 +15,6 @@ class AppColor {
     800: Color(0xFF0B100E),
     900: Color(0xFF000000),
   });
+
+  static const Color white = Color(0xFFFFFFFF);
 }

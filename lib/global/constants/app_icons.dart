@@ -1,4 +1,5 @@
 class AppIcons {
   AppIcons._();
-  //Images
+  //SVGS
+  static const String swipeArrow = 'assets/svgs/swipe-arrow.svg';
 }
