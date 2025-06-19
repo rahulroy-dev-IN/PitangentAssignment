@@ -25,6 +25,11 @@ class PreferenceConnector {
     return prefs.getBool(key);
   }
 
+  Future<List<String>?> getStringList(String key) async {
+    SharedPreferences prefs = await _getSharedPreference();
+    return prefs.getStringList(key);
+  }
+
   Future setString(String key, String value) async {
     SharedPreferences prefs = await _getSharedPreference();
     prefs.setString(key, value);
@@ -43,6 +48,11 @@ class PreferenceConnector {
   void setBool(String key, bool value) async {
     SharedPreferences prefs = await _getSharedPreference();
     prefs.setBool(key, value);
+  }
+
+  Future setStringList(String key, List<String> value) async {
+    SharedPreferences prefs = await _getSharedPreference();
+    await prefs.setStringList(key, value);
   }
 
   void removePreference(String key) async {

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:pitangent_assignment/global/constants/api_endpoints.dart';
+import 'package:pitangent_assignment/global/network/shared_pref/pref_strings.dart';
+import 'package:pitangent_assignment/global/network/shared_pref/preference_connector.dart';
 
 class DioClient {
   static final DioClient _instance = DioClient._internal();
@@ -51,8 +53,7 @@ class DioClient {
   Dio get dio => _dio;
 
   Future<String?> getAccessToken() async {
-    // Read from SharedPreferences or secure storage
-    return _TokenStore.accessToken;
+    return PreferenceConnector().getString(PrefStrings.accessToken);
   }
 
   Future<String?> _refreshToken() async {
@@ -64,7 +65,9 @@ class DioClient {
     _refreshCompleter = Completer();
 
     try {
-      final refreshToken = await _TokenStore.getRefreshToken();
+      final refreshToken = await PreferenceConnector().getString(
+        PrefStrings.refreshToken,
+      );
       final response = await _dio.post(
         '/auth/refresh',
         data: {'refreshToken': refreshToken},
@@ -73,7 +76,14 @@ class DioClient {
       final newAccessToken = response.data['accessToken'];
       final newRefreshToken = response.data['refreshToken'];
 
-      await _TokenStore.saveTokens(newAccessToken, newRefreshToken);
+      await PreferenceConnector().setString(
+        PrefStrings.accessToken,
+        newAccessToken,
+      );
+      await PreferenceConnector().setString(
+        PrefStrings.refreshToken,
+        newRefreshToken,
+      );
       _refreshCompleter.complete(newAccessToken);
       return newAccessToken;
     } catch (e) {
@@ -138,20 +148,5 @@ class DioClient {
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
     );
-  }
-}
-
-class _TokenStore {
-  static String? accessToken;
-  static String? refreshToken;
-
-  static Future<void> saveTokens(String access, String refresh) async {
-    accessToken = access;
-    refreshToken = refresh;
-    // Store securely
-  }
-
-  static Future<String?> getRefreshToken() async {
-    return refreshToken;
   }
 }

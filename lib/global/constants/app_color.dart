@@ -1,7 +1,19 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class AppColor {
   AppColor._();
+
+  static Color getRandomLightColor() {
+    final rand = Random();
+    return Color.fromARGB(
+      255,
+      180 + rand.nextInt(76),
+      180 + rand.nextInt(76),
+      180 + rand.nextInt(76),
+    );
+  }
 
   static const MaterialColor primary = MaterialColor(0xFF000000, {
     50: Color(0xFFebecf0),
@@ -17,4 +29,6 @@ class AppColor {
   });
 
   static const Color white = Color(0xFFFFFFFF);
+
+  static const Color red = Color(0xFFFF0000);
 }

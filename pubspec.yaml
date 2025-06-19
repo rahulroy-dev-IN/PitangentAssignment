@@ -41,7 +41,11 @@ dependencies:
   google_fonts: ^6.2.1
   slider_button: ^2.1.0
   flutter_svg: ^2.2.0
-  shimmer: ^3.0.0
+  skeletonizer: ^2.0.1
+  flutter_bloc: ^9.1.1
+  image: ^4.5.4
+  animated_text_kit: ^4.2.3
+  device_preview_plus: ^2.4.3
 
 dependency_overrides:
   vibration: ^3.1.3

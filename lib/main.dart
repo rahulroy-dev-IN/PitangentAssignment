@@ -1,4 +1,7 @@
+import 'package:device_preview_plus/device_preview_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pitangent_assignment/global/di/dependency_injection.dart';
@@ -6,15 +9,20 @@ import 'package:pitangent_assignment/global/presentation/router/app_router.dart'
 import 'package:pitangent_assignment/global/util/navigation_service.dart';
 
 Future<void> main() async {
-  await initGetServiceLocator();
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  await initGetServiceLocator();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  return runApp(
+    DevicePreview(enabled: !kReleaseMode, builder: (context) => const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     final AppRouter router = AppRouter();

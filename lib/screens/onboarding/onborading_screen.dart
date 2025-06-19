@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -145,7 +143,6 @@ class _OnboradingScreenState extends State<OnboradingScreen>
                           padding: EdgeInsets.all(20.w),
                           child: SliderButton(
                             action: () async {
-                              log("Slider Button Clicked");
                               Navigator.of(
                                 context,
                               ).pushReplacementNamed(AppRoute.home);

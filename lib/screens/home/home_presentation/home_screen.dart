@@ -1,15 +1,21 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pitangent_assignment/global/constants/app_color.dart';
 import 'package:pitangent_assignment/global/constants/app_font.dart';
 import 'package:pitangent_assignment/global/constants/app_strings.dart';
+import 'package:pitangent_assignment/global/network/modal/local/category.dart';
 import 'package:pitangent_assignment/global/presentation/shimmers/fashion_card_shimmer.dart';
+import 'package:pitangent_assignment/screens/home/home_logic/favorite_bloc.dart';
+import 'package:pitangent_assignment/screens/home/home_logic/favorite_event.dart';
+import 'package:pitangent_assignment/screens/home/home_logic/product_event.dart';
+import 'package:pitangent_assignment/screens/home/home_logic/products_bloc.dart';
+import 'package:pitangent_assignment/screens/home/home_logic/products_state.dart';
 import 'package:pitangent_assignment/screens/home/home_presentation/widget/category_tab.dart';
 import 'package:pitangent_assignment/screens/home/home_presentation/widget/fashion_card.dart';
+import 'package:pitangent_assignment/screens/home/home_presentation/widget/isolate_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,19 +25,39 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String selectedCat = 'All';
+  final List<Category> tabs = [
+    Category(name: 'All', tag: null),
+    Category(name: 'Women Dressed', tag: 'womens-dresses'),
+    Category(name: 'Men Shirts', tag: 'mens-shirts'),
+    Category(tag: "mens-shoes", name: "Mens Shoes"),
+    Category(tag: "womens-shoes", name: "Womens Shoes"),
+    Category(tag: "womens-watches", name: "Womens Watches"),
+    Category(tag: "sunglasses", name: "Sunglasses"),
+  ];
+  var sliverGridDelegateWithFixedCrossAxisCount =
+      SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 20,
+        childAspectRatio: 0.7,
+      );
+  Category? selectedCat;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        selectedCat = tabs.first;
+      });
+      context.read<ProductsBloc>().add(LoadProduct());
+      context.read<FavoriteBloc>().add(LoadFavorites());
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<String> tabs = [
-      'All',
-      'Women',
-      'Man',
-      'Shoes',
-      'Sunglasses',
-      'Mens Watches',
-      'Womens Watches',
-    ];
-    log(MediaQuery.paddingOf(context).top.toString());
     return Scaffold(
       backgroundColor: AppColor.white,
       body: CustomScrollView(
@@ -50,10 +76,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 20.r,
-                          backgroundImage: NetworkImage(
-                            'https://i.pravatar.cc/150?img=5',
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  Dialog(child: IsolateDialog()),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 20.r,
+                            backgroundImage: NetworkImage(
+                              'https://i.pravatar.cc/150?img=5',
+                            ),
                           ),
                         ),
                         SizedBox(width: 10.w),
@@ -162,12 +197,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: tabs
                               .map(
                                 (tab) => CategoryTab(
-                                  title: tab,
+                                  title: tab.name ?? '',
                                   selected: tab == selectedCat,
                                   onTap: () {
                                     setState(() {
                                       selectedCat = tab;
                                     });
+                                    context.read<ProductsBloc>().add(
+                                      LoadProduct(category: tab.tag),
+                                    );
                                   },
                                 ),
                               )
@@ -182,27 +220,63 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            sliver: SliverGrid.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 20,
-                childAspectRatio: 0.7,
-              ),
-              itemCount: 20,
-              itemBuilder: (BuildContext context, int index) {
-                log('Building item $index');
-                if (index > 17) {
-                  return FashionCardShimmer();
+            sliver: BlocBuilder<ProductsBloc, ProductsState>(
+              builder: (context, state) {
+                if (state is ProductInitial || state is ProductInitialLoading) {
+                  return SliverGrid.builder(
+                    gridDelegate: sliverGridDelegateWithFixedCrossAxisCount,
+                    itemCount: 10,
+                    itemBuilder: (BuildContext context, int index) {
+                      return FashionCardShimmer();
+                    },
+                  );
+                } else if (state is ProductLoaded) {
+                  return SliverGrid.builder(
+                    gridDelegate: sliverGridDelegateWithFixedCrossAxisCount,
+                    itemCount: state.hasReachedMax
+                        ? state.products.length
+                        : state.products.length + 2,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == state.products.length) {
+                        context.read<ProductsBloc>().add(
+                          LoadMoreProduct(category: selectedCat?.tag),
+                        );
+                      }
+                      if (index >= state.products.length) {
+                        return FashionCardShimmer();
+                      }
+                      final product = state.products[index];
+                      return FashionCard(
+                        id: product.id ?? -2,
+                        image: product.images?.firstOrNull ?? '',
+                        title: product.title ?? '',
+                        subtitle: product.brand ?? '',
+                        price: '${product.price}',
+                        rating: product.rating ?? 0.0,
+                      );
+                    },
+                  );
+                } else if (state is ProductError) {
+                  return SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 100.h,
+                      child: Center(
+                        child: Text(
+                          state.message,
+                          textAlign: TextAlign.center,
+                          style: AppFont.mediumTS(color: Colors.red),
+                        ),
+                      ),
+                    ),
+                  );
                 }
-                return FashionCard(
-                  image: 'https://i.pravatar.cc/150?img=$index',
-                  title: 'Fashion Item $index',
-                  price: '\$${(index + 1) * 20}',
-                  rating: 4.5 + (index % 5) * 0.1,
-                );
+                return SizedBox.shrink();
               },
             ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: SizedBox(height: 100.h),
           ),
         ],
       ),

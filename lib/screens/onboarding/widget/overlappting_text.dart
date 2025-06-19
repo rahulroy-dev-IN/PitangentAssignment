@@ -19,28 +19,13 @@ class OverlappingText extends StatelessWidget {
             text: 'U',
             style: AppFont.extraLargeTS(color: AppColor.white),
           ),
-          TextSpan(
-            text: 'N\n',
-            // style: AppFont.extraLargeTS(
-            //   color: isTop ? Colors.transparent : AppColor.white,
-            // ),
-          ),
-          TextSpan(
-            text: 'O',
-            style: AppFont.extraLargeTS(
-              color: isTop ? Colors.transparent : AppColor.white,
-            ),
-          ),
+          const TextSpan(text: 'N\n'),
+          const TextSpan(text: 'O'),
           TextSpan(
             text: 'V',
             style: AppFont.extraLargeTS(color: AppColor.white),
           ),
-          TextSpan(
-            text: 'A',
-            style: AppFont.extraLargeTS(
-              color: isTop ? Colors.transparent : AppColor.white,
-            ),
-          ),
+          const TextSpan(text: 'A'),
         ],
       ),
 
