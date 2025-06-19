@@ -12,7 +12,10 @@ class FashionCardShimmer extends StatelessWidget {
       baseColor: AppColor.primary.shade50,
       highlightColor: AppColor.white,
       child: Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.r)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.r),
+          color: AppColor.white,
+        ),
       ),
     );
   }
