@@ -24,4 +24,14 @@ class AppStrings {
       "Discover the latest trends, curated collections and exclusive offers to keep yourself dashing.";
 
   static String getStarted = "Get Started";
+
+  static String hello = "Hello!";
+
+  static String alexa = "Alexa";
+
+  static String tailoredTrends = "Tailored Trends,";
+
+  static String handpicked = "Handpicked for you.";
+
+  static String search = 'Search';
 }

@@ -9,6 +9,7 @@ import 'package:pitangent_assignment/global/constants/app_font.dart';
 import 'package:pitangent_assignment/global/constants/app_icons.dart';
 import 'package:pitangent_assignment/global/constants/app_images.dart';
 import 'package:pitangent_assignment/global/constants/app_strings.dart';
+import 'package:pitangent_assignment/global/presentation/router/app_router.dart';
 import 'package:pitangent_assignment/screens/onboarding/widget/overlappting_text.dart';
 import 'package:slider_button/slider_button.dart';
 
@@ -145,8 +146,12 @@ class _OnboradingScreenState extends State<OnboradingScreen>
                           child: SliderButton(
                             action: () async {
                               log("Slider Button Clicked");
-                              return false;
+                              Navigator.of(
+                                context,
+                              ).pushReplacementNamed(AppRoute.home);
+                              return true;
                             },
+                            vibrationFlag: false,
 
                             label: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -163,7 +168,7 @@ class _OnboradingScreenState extends State<OnboradingScreen>
                             radius: 70.h,
                             buttonColor: AppColor.white,
                             backgroundColor: AppColor.primary,
-                            highlightedColor: Colors.white,
+                            highlightedColor: AppColor.white,
                             baseColor: AppColor.primary.shade100,
                             dismissThresholds: 0.55,
                             child: Container(

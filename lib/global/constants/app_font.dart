@@ -6,6 +6,12 @@ class AppFont {
   AppFont._();
 
   static final _extraLarge = 160.w;
+  static final _large = 38.w;
+  static final _header1 = 22.sp;
+  static final _medium = 18.sp;
+  static final _mediumMinus = 16.sp;
+  static final _small = 14.sp;
+  static final _tiny = 12.sp;
 
   static TextStyle extraLargeTS({Color? color}) {
     return TextStyle(
@@ -18,39 +24,59 @@ class AppFont {
 
   static TextStyle largeTS({Color? color, String? fontFamily}) {
     return TextStyle(
-      fontSize: 38.w,
+      fontSize: _large,
       fontWeight: FontWeight.w600,
       height: 1,
-      color: color ?? AppColor.white,
+      color: color ?? AppColor.primary,
+      fontFamily: fontFamily,
+    );
+  }
+
+  static TextStyle header1TS({Color? color, String? fontFamily}) {
+    return TextStyle(
+      fontSize: _header1,
+      height: 1,
+      fontWeight: FontWeight.bold,
+      color: color ?? AppColor.primary,
       fontFamily: fontFamily,
     );
   }
 
   static TextStyle mediumTS({Color? color, String? fontFamily}) {
     return TextStyle(
-      fontSize: 18.w,
+      fontSize: _medium,
       fontWeight: FontWeight.w500,
       height: 1,
-      color: color ?? AppColor.white,
+      color: color ?? AppColor.primary,
+      fontFamily: fontFamily,
+    );
+  }
+
+  static TextStyle mediumMinusTS({Color? color, String? fontFamily}) {
+    return TextStyle(
+      fontSize: _mediumMinus,
+      fontWeight: FontWeight.w500,
+      height: 1,
+      color: color ?? AppColor.primary,
       fontFamily: fontFamily,
     );
   }
 
   static TextStyle smallTS({Color? color, String? fontFamily}) {
     return TextStyle(
-      fontSize: 14.w,
+      fontSize: _small,
       fontWeight: FontWeight.w400,
       height: 1,
-      color: color ?? AppColor.white,
+      color: color ?? AppColor.primary,
       fontFamily: fontFamily,
     );
   }
 
   static TextStyle tinyTS({Color? color, String? fontFamily}) {
     return TextStyle(
-      fontSize: 12.w,
+      fontSize: _tiny,
       fontWeight: FontWeight.w400,
-      color: color ?? AppColor.white,
+      color: color ?? AppColor.primary,
       height: 1,
       fontFamily: fontFamily,
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pitangent_assignment/global/di/dependency_injection.dart';
 import 'package:pitangent_assignment/global/presentation/router/app_router.dart';
 import 'package:pitangent_assignment/global/util/navigation_service.dart';
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppRouter router = AppRouter();
-
+    final textTheme = Theme.of(context).textTheme;
     return ScreenUtilInit(
       useInheritedMediaQuery: true,
       designSize: const Size(411, 891),
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
             child: child!,
           );
         },
+        theme: ThemeData(textTheme: GoogleFonts.poppinsTextTheme(textTheme)),
         debugShowCheckedModeBanner: false,
         navigatorKey: getIt<NavigationService>().navigatorKey,
         onGenerateRoute: router.onGenerateRoute,
